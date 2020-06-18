@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ResultActivity extends AppCompatActivity implements View.OnClickListener {
-    RadioGroup radioGroupFilter, radioGroupSort;
-    ListView listViewResult;
-    EditText editTextName;
-    TextView textViewScore;
-    Button btnShow, btnBack;
-    ArrayList<Quiz> listOfQuiz;
-    ArrayList<Quiz> currentListOfQuiz;
-    float score;
+    private RadioGroup radioGroupFilter, radioGroupSort;
+    private ListView listViewResult;
+    private EditText editTextName;
+    private TextView textViewScore;
+    private Button btnShow, btnBack;
+    private ArrayList<Quiz> listOfQuiz;
+    private ArrayList<Quiz> currentListOfQuiz;
+    private float score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +36,9 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initialize() {
+        // initialize elements
         radioGroupFilter = findViewById(R.id.radioGroupFilter);
-        radioGroupSort =findViewById(R.id.radioGroupSort);
+        radioGroupSort = findViewById(R.id.radioGroupSort);
         listViewResult = findViewById(R.id.listViewResult);
         editTextName = findViewById(R.id.editTextName);
         textViewScore = findViewById(R.id.textViewScore);
@@ -46,23 +47,29 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         btnShow.setOnClickListener(this);
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
-
+        // get intent and get bundle data
         Bundle bundle = getIntent().getBundleExtra("intentExtra");
+        // get serializable list
         Serializable bundledListOfQuiz = bundle.getSerializable("bundleExtra");
+        // assign quiz list to member variable
         listOfQuiz = (ArrayList<Quiz>) bundledListOfQuiz;
-
-        ArrayAdapter<Quiz> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                listOfQuiz);
+        // Create an Adapter for ListView
+        ArrayAdapter<Quiz> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listOfQuiz);
+        // Assign the Adapter to the list view
         listViewResult.setAdapter(listAdapter);
+        // get user score and set it to score variable
         score = calculateScore();
         textViewScore.setText(String.format("%.0f%%", score));
+        // set all data as default quiz data to show
         currentListOfQuiz = listOfQuiz;
     }
 
     public void showMe(View view) {
-        int selected_radio_btn = radioGroupFilter.getCheckedRadioButtonId();
-        String filter;
 
+        int selected_radio_btn = radioGroupFilter.getCheckedRadioButtonId();
+        // declare filter variable to filter quiz data
+        String filter;
+        // get filter value
         switch (selected_radio_btn) {
             case R.id.radioButtonRight:
                 filter = "Right";
@@ -75,15 +82,19 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
                 filter = "All";
                 break;
         }
+        // filter quiz data by result(right or wrong)
         currentListOfQuiz = filterQuizByResult(filter);
+        // create an adaptor for list view
         ArrayAdapter<Quiz> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                 currentListOfQuiz);
+        // assign the adapter to the list view
         listViewResult.setAdapter(listAdapter);
-
     }
+
     public void sorting(View view) {
+        // get sorting key value
         int selected_radio_btn = radioGroupSort.getCheckedRadioButtonId();
-        if(currentListOfQuiz.size()!=0) {
+        if (currentListOfQuiz.size() != 0) {
             switch (selected_radio_btn) {
                 case R.id.radioButtonAscending:
                     Collections.sort(currentListOfQuiz);
@@ -93,26 +104,27 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
                     Collections.reverse(currentListOfQuiz);
                     break;
             }
+            // create an adapter for list view
             ArrayAdapter<Quiz> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                     currentListOfQuiz);
+            // assign the adaptor to the list view
             listViewResult.setAdapter(listAdapter);
         }
     }
 
+    // filter quizzes data by result filter
     private ArrayList<Quiz> filterQuizByResult(String filter) {
         ArrayList<Quiz> listOfQuizToShow = new ArrayList<>();
         if (filter.compareTo("All") == 0) {
             listOfQuizToShow = listOfQuiz;
         } else if (filter.compareTo("Right") == 0) {
-            for (Quiz one : listOfQuiz) {
+            for (Quiz one : listOfQuiz)
                 if (one.getResult().compareTo("right") == 0)
                     listOfQuizToShow.add(one);
-            }
         } else if (filter.compareTo("Wrong") == 0) {
-            for (Quiz one : listOfQuiz) {
+            for (Quiz one : listOfQuiz)
                 if (one.getResult().compareTo("wrong") == 0)
                     listOfQuizToShow.add(one);
-            }
         }
         return listOfQuizToShow;
     }
@@ -128,8 +140,6 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-
-
     public void goBack() {
         String name = editTextName.getText().toString();
         Intent intent = new Intent();
@@ -140,12 +150,15 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         finish();
     }
 
+    // calculate the user score using quizzes data
     private float calculateScore() {
         int numberOfRightQuiz = 0;
+        // get the number of right answer
         for (Quiz one : listOfQuiz) {
             if (one.getResult().compareTo("right") == 0)
                 numberOfRightQuiz += 1;
         }
+        // calculate
         if (listOfQuiz.size() != 0)
             return numberOfRightQuiz * 100 / listOfQuiz.size();
         else

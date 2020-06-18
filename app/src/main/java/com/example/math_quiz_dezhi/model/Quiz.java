@@ -5,12 +5,16 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 public class Quiz implements Serializable, Comparable {
-
+    // Basic operation
     private String operation;
+    // The right answer of operation
     private float rightAnswer;
+    // the answer inputted by user
     private float userAnswer;
+    // the result if the answer user inputted equals to the right answer
     private String result;
 
+    // constructor
     public Quiz(String operation, float rightAnswer, float userAnswer, String result) {
         this.operation = operation;
         this.rightAnswer = rightAnswer;
@@ -18,6 +22,7 @@ public class Quiz implements Serializable, Comparable {
         this.result = result;
     }
 
+    // getters and setters generated automatically
     public String getOperation() {
         return operation;
     }

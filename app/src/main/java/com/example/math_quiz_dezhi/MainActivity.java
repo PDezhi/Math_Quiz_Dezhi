@@ -21,15 +21,14 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     final static int REQUEST_CODE = 1;
 
-    EditText editTextAnswer;
-    TextView textViewOperation,textViewReturnResult;
-    Button btnOne, btnTwo, btnThree, btnFour, btnFive, btnSix, btnSeven, btnEight, btnNine, btnZero;
-    Button btnPoint, btnMinus, btnGenerate, btnValidate, btnClear, btnScore, btnFinish;
+    private EditText editTextAnswer;
+    private TextView textViewOperation, textViewReturnResult;
+    private Button btnOne, btnTwo, btnThree, btnFour, btnFive, btnSix, btnSeven, btnEight, btnNine, btnZero;
+    private Button btnPoint, btnMinus, btnGenerate, btnValidate, btnClear, btnScore, btnFinish;
 
-    float rightAnswer;
-    String answer = "", operation;
-    ArrayList<Quiz> listOfQuizs;
-
+    private float rightAnswer;
+    private String answer = "", operation;
+    private ArrayList<Quiz> listOfQuizzes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +76,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMinus.setOnClickListener(this);
         textViewReturnResult = findViewById(R.id.textViewReturnResult);
 
-        listOfQuizs = new ArrayList<>();
+        listOfQuizzes = new ArrayList<>();
     }
-
 
     @Override
     public void onClick(View view) {
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnZero:
             case R.id.btnPoint:
             case R.id.btnMinus:
-                inputUserAnswer(view);
+                getUserInput(view);
                 break;
             case R.id.btnGenerate:
                 generate();
@@ -117,7 +115,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void inputUserAnswer(View view) {
+    // get data user inputs and show it on the screen
+    private void getUserInput(View view) {
         Button currentBtn = (Button) view;
         String inputKey = currentBtn.getText().toString();
         if (inputKey.compareTo(".") == 0 && answer.contains("."))
@@ -134,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // generate a operations randomly and automatically and then show it on the screen
     private void generate() {
         String operators[] = {"+", "-", "*", "/"};
         Random random = new Random();
@@ -141,7 +141,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String CurrentOperator = operators[randomIndex];
         int operand1 = random.nextInt(10);
         int operand2 = random.nextInt(10);
+
+        // for division as divisor, prevent divisor equals zero
         int operand3 = random.nextInt(9) + 1;
+
         switch (CurrentOperator) {
             case "+":
                 rightAnswer = operand1 + operand2;
@@ -153,14 +156,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 rightAnswer = operand1 * operand2;
                 break;
             case "/":
-                rightAnswer = operand1 / operand3;
+                rightAnswer = (float) (Math.round(operand1 * 10 / operand3) / 10.0);
                 operand2 = operand3;
                 break;
         }
+
         operation = operand1 + " " + CurrentOperator + " " + operand2;
         textViewOperation.setText(operation);
     }
 
+    // validate the answer user inputted is right or wrong
     private void validate() {
         String strUserAnswer = editTextAnswer.getText().toString();
         String result;
@@ -171,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else
                 result = "wrong";
             Quiz quiz = new Quiz(operation, rightAnswer, userAnswer, result);
-            listOfQuizs.add(quiz);
+            listOfQuizzes.add(quiz);
             showMessage("Your answer is " + result);
             clear();
         } catch (Exception e) {
@@ -179,34 +184,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // Clear the display
     private void clear() {
         editTextAnswer.setText("");
         textViewOperation.setText("0 + 0");
         answer = "";
     }
 
+    // Go to Result page with data that will be showed there. will be invoked by layout onClick property
     private void showScore() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("bundleExtra", listOfQuizs);
+        bundle.putSerializable("bundleExtra", listOfQuizzes);
 
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("intentExtra", bundle);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
+    // show a message passed by parameter on the screen
     private void showMessage(String strMessage) {
         Toast message = Toast.makeText(this, strMessage, Toast.LENGTH_LONG);
         message.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 50);
         message.show();
     }
 
+    // get and show return data on main page
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         String receivedName = (String) data.getStringExtra("return_name_tag");
         String receivedScore = (String) data.getStringExtra("return_score_tag");
-        String showData = receivedName+" : " + receivedScore;
-        textViewReturnResult.setText(showData);
+        textViewReturnResult.setText(receivedName + "  :  " + receivedScore);
     }
 }
