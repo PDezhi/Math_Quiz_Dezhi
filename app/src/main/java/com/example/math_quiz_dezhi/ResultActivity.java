@@ -53,13 +53,16 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         Serializable bundledListOfQuiz = bundle.getSerializable("bundleExtra");
         // assign quiz list to member variable
         listOfQuiz = (ArrayList<Quiz>) bundledListOfQuiz;
+
         // Create an Adapter for ListView
         ArrayAdapter<Quiz> listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listOfQuiz);
         // Assign the Adapter to the list view
         listViewResult.setAdapter(listAdapter);
+
         // get user score and set it to score variable
         score = calculateScore();
         textViewScore.setText(String.format("%.0f%%", score));
+
         // set all data as default quiz data to show
         currentListOfQuiz = listOfQuiz;
     }
@@ -115,15 +118,15 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
     // filter quizzes data by result filter
     private ArrayList<Quiz> filterQuizByResult(String filter) {
         ArrayList<Quiz> listOfQuizToShow = new ArrayList<>();
-        if (filter.compareTo("All") == 0) {
+        if (filter.equals("All")) {
             listOfQuizToShow = listOfQuiz;
-        } else if (filter.compareTo("Right") == 0) {
+        } else if (filter.equals("Right")) {
             for (Quiz one : listOfQuiz)
-                if (one.getResult().compareTo("right") == 0)
+                if (one.getResult().equals("right"))
                     listOfQuizToShow.add(one);
-        } else if (filter.compareTo("Wrong") == 0) {
+        } else if (filter.equals("Wrong")) {
             for (Quiz one : listOfQuiz)
-                if (one.getResult().compareTo("wrong") == 0)
+                if (one.getResult().equals("wrong"))
                     listOfQuizToShow.add(one);
         }
         return listOfQuizToShow;
@@ -134,6 +137,7 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.btnBack:
                 goBack();
+
                 break;
             case R.id.btnShow:
                 break;
@@ -155,7 +159,7 @@ public class ResultActivity extends AppCompatActivity implements View.OnClickLis
         int numberOfRightQuiz = 0;
         // get the number of right answer
         for (Quiz one : listOfQuiz) {
-            if (one.getResult().compareTo("right") == 0)
+            if (one.getResult().equals("right"))
                 numberOfRightQuiz += 1;
         }
         // calculate

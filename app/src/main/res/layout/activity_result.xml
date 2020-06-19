@@ -26,10 +26,10 @@
         <RadioGroup
             android:id="@+id/radioGroupFilter"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewTitle"
             android:layout_marginTop="16dp"
+            android:layout_weight="3"
             android:orientation="horizontal">
 
             <RadioButton
@@ -64,11 +64,11 @@
         <RadioGroup
             android:id="@+id/radioGroupSort"
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewTitle"
             android:layout_marginTop="16dp"
             android:layout_toRightOf="@id/radioGroupFilter"
+            android:layout_weight="2"
             android:orientation="horizontal">
 
             <RadioButton

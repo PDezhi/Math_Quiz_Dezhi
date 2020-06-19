@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMinus = findViewById(R.id.btnMinus);
         btnMinus.setOnClickListener(this);
         textViewReturnResult = findViewById(R.id.textViewReturnResult);
-
+        // set default quizzes data for the page first show.
         listOfQuizzes = new ArrayList<>();
     }
 
@@ -119,9 +119,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getUserInput(View view) {
         Button currentBtn = (Button) view;
         String inputKey = currentBtn.getText().toString();
-        if (inputKey.compareTo(".") == 0 && answer.contains("."))
+        if (inputKey.equals(".") && answer.contains("."))
             showMessage("The data you input does not allow to have more than one points!");
-        else if (inputKey.compareTo("-") == 0 && answer != "")
+        else if (inputKey.equals("-") && answer != "")
             showMessage("The data you input already has a minus asign!");
         else {
             // Input data using keyboard and buttons
